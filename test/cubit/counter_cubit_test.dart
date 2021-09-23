@@ -1,4 +1,5 @@
-import 'package:bloc_architecture/cubit/counter_cubit.dart';
+import 'package:bloc_architecture/logic/cubit/counter_cubit.dart';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,7 +13,8 @@ void main() {
       counterCubit?.close();
     });
 
-    test('The initial state for countercubit if Countervalue 0', () {
+    test('The initial state for countercubit is CounterState(Countervalue 0)',
+        () {
       expect(counterCubit?.state, CounterState(counterValue: 0));
     });
 
