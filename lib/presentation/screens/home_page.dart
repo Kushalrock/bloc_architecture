@@ -1,3 +1,5 @@
+import 'package:bloc_architecture/constants/enums.dart';
+import 'package:bloc_architecture/logic/cubit/internet_cubit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +20,21 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            BlocBuilder<InternetCubit, InternetState>(
+              builder: (context, state) {
+                if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.Mobile) {
+                  return Text('Mobile Conected');
+                } else if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.Wifi) {
+                  return Text('Wifi Conected');
+                } else if (state is InternetDisconnected) {
+                  return Text('Disconnected');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
             Text(
               'You have pushed the button this many times:',
             ),
