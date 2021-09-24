@@ -12,81 +12,92 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            BlocBuilder<InternetCubit, InternetState>(
-              builder: (context, state) {
-                if (state is InternetConnected &&
-                    state.connectionType == ConnectionType.Mobile) {
-                  return Text('Mobile Conected');
-                } else if (state is InternetConnected &&
-                    state.connectionType == ConnectionType.Wifi) {
-                  return Text('Wifi Conected');
-                } else if (state is InternetDisconnected) {
-                  return Text('Disconnected');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            BlocConsumer<CounterCubit, CounterState>(
-              listener: (context, state) {
-                if (state.incremented) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Incremented'),
-                      duration: Duration(milliseconds: 20),
-                    ),
+    return BlocListener<InternetCubit, InternetState>(
+      listener: (context, state) {
+        if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Mobile) {
+          context.read<CounterCubit>().decrement();
+        } else if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Wifi) {
+          context.read<CounterCubit>().increment();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              BlocBuilder<InternetCubit, InternetState>(
+                builder: (context, state) {
+                  if (state is InternetConnected &&
+                      state.connectionType == ConnectionType.Mobile) {
+                    return Text('Mobile Conected');
+                  } else if (state is InternetConnected &&
+                      state.connectionType == ConnectionType.Wifi) {
+                    return Text('Wifi Conected');
+                  } else if (state is InternetDisconnected) {
+                    return Text('Disconnected');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+              Text(
+                'You have pushed the button this many times:',
+              ),
+              BlocConsumer<CounterCubit, CounterState>(
+                listener: (context, state) {
+                  if (state.incremented) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Incremented'),
+                        duration: Duration(milliseconds: 20),
+                      ),
+                    );
+                  }
+                  if (!state.incremented) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Decremented'),
+                        duration: Duration(milliseconds: 20),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  return Text(
+                    state.counterValue.toString(),
+                    style: Theme.of(context).textTheme.headline4,
                   );
-                }
-                if (!state.incremented) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Decremented'),
-                      duration: Duration(milliseconds: 20),
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                return Text(
-                  state.counterValue.toString(),
-                  style: Theme.of(context).textTheme.headline4,
-                );
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).increment();
-                  },
-                  child: Icon(Icons.add),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).decrement();
-                  },
-                  child: Icon(Icons.remove),
-                )
-              ],
-            ),
-          ],
+                },
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      BlocProvider.of<CounterCubit>(context).increment();
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      BlocProvider.of<CounterCubit>(context).decrement();
+                    },
+                    child: Icon(Icons.remove),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
